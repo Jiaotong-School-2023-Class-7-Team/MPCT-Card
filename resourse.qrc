@@ -1,0 +1,16 @@
+<RCC>
+  <qresource prefix="image">
+    <file>img/shangcheng.png</file>
+    <file>img/beibao.png</file>
+    <file>img/shiyanshi_disabled.png</file>
+    <file>img/shiyanshi.png</file>
+    <file>img/duizhan.png</file>
+    <file>img/zhishi.png</file>
+    <file>img/null.png</file>
+    <file>img/bg.png</file>
+  </qresource>
+  <qresource prefix="icon">
+    <file>img/icon-settings.ico</file>
+    <file>img/icon.ico</file>
+  </qresource>
+</RCC>

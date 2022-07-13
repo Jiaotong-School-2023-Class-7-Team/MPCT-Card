@@ -1,0 +1,74 @@
+from GData.Db import SQLite3
+from GWeb import spider
+import files, re, Data, ids, url, xmlparse
+from GCommand import argparser
+from GProgram import *
+from GGui import msgbox
+from GGui.GImage import Image
+
+package ReadData extends (GPkg.Base, GPkg.CommandBase) from GPkg.PkgPre["base"]:
+    class Datas extends Data:
+        function __init__(this, id, file, table):
+            super().__init__("data", "core", url, ids.getDataId("mpctc.core.data.*", hself=true))
+            this.file = files.open(file)
+            this.table = table
+            this.url = url.join("mpctc.top/data", String(id), file)
+            this.content = spider.get(this.url).content
+            try: files.writeToTemp("mpctc", this.file, this.content)
+            catch: null
+            this.db = db.connect(files.path.join("%TEMP%", "mpctc/{}".format(this.file.name)))
+            this.datas = this.readDataFromDb()
+
+        function readDataFromDb():
+            this.cursor = this.db.cursor()
+            this.cursor.execute("SELECT * FROM `{}`".format(this.table))
+            return this.cursor.fetchall()
+
+    function getCardsData():
+        d = new Datas(217912, "cards.db", "cards")
+        cards = new List()
+        for (i="") in d.datas:
+            try:
+                with open(i[1], "r", encoding="utf-8") as file:
+                    thing = file.read()
+            catch Error as e:
+                msgbox.warning("Error", String(e), msgbox.btn.Ok)
+                thing = "(Not loaded)"
+            bs = new xmlparse.HTMLParser(thing)
+            text_element = bs.find("p", id="text")
+            text = text_element.text.replace(" ", "").replace("\n", "")
+            info_element = bs.find("p", id="info")
+            info = info_element.text.replace(" ", "")
+            type_element = bs.find("p", id="type")
+            type_ = type_element.text.replace(" ", "")
+            try:
+                image_file = Image.open(i[3])
+                image = new Image.GuiImage(image_file)
+            catch Error as e:
+                QMessageBox.warning(None, "Error", str(e), QMessageBox.Ok)
+                image = new Image.GuiImage(Image.open("img/dataNotLoaded.png"))
+            cards.append([i[0], text, info, i[2], type_, image])
+        return cards
+
+    function getQuestionsData():
+        d = new Datas(332588, "ques.db", "questions")
+        return d.datas
+
+    function getUsersData():
+        d = new Datas(672589, "users.db", "users")
+        return d.datas
+
+    function getSetsData():
+        d = new Datas(422074, "defult.db", "sets")
+        return d.datas
+
+    function getDefultData():
+        d = new Datas(422524, "defult.db", "defult")
+        return d.datas
+
+    function commandMain():
+        argparser.addArg("data")
+        args = argparser.getArgs()
+        cmd = "get{}sData".format(args.data)
+        cmd[3] = cmd[3].uppper()
+        execute(cmd)

@@ -1,0 +1,33 @@
+#*[START] save*#
+
+[START] cards
+M-[START]
+M-GOUGU card
+M-SQRT2 card
+M-GEOMETRY card
+P-[START]
+P-LEVER card
+P-BUOYANCY card
+P-SPECIFIC_GRAVITY card
+C-[START]
+C-HYDROGEN card
+C-CARBON card
+C-OXYGEN card
+T-[START]
+T-ALCOHOL_BURNER card
+[END] cards
+[START] user
+1 level
+10 cards
+2 experience
+(?,?) info
+[END] user
+[START] things
+TRUE knowledge
+FALSE fight
+FALSE lab
+TRUE shop
+TRUE bag
+[END] things
+
+#*[END] save*#
